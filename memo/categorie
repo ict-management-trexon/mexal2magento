@@ -1,0 +1,6 @@
+query dalla tabella vidad, quella utilizzata da da trexon.it
+select distinct WAF_CATEGORIA_WEB from "trn_rp"."dbo"."TRN_VIDAD" where not WAF_CATEGORIA_WEB = '-'
+
+query dalla tabella di mexal originaria
+select NKY_CAT_STAT_ART, CDS_CAT_STAT_ART from "trn_rp"."dbo"."TRN_TBSA" where not CDS_CAT_STAT_ART = ''
+
