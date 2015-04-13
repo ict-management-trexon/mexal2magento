@@ -59,30 +59,12 @@ public class MagentoXMLRPCOperation {
 	public void connect(){
 		try {
 			this.client = new XmlRpcClient(urlString, false);
+			
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		this.startSession();
-	}
-	
-	private Object reconnectToMagento(String command, Object[] params){
-		client=null;
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		try {
-			//xmlRpc
-			this.client = new XmlRpcClient(urlString, false);
-			Object[] login = new Object[]{new String("Enzo"), new String("password")};
-			this.sessionId = (String) this.client.invoke("login", login);
-			return this.client.invoke(command, params);
-			
-		} catch (Exception e) {e.printStackTrace();} 
-		return new Object[]{};
 	}
 	
 	private void startSession(){
@@ -459,5 +441,14 @@ public class MagentoXMLRPCOperation {
 		}
 		return null;
 	}
+	
+	public XmlRpcStruct getCategoryTree(){
+		
+		XmlRpcStruct   ret = new XmlRpcStruct();
+		
+		ret = (XmlRpcStruct) this.executeCall(new Object[]{this.sessionId, Methods.CATALOG_CATEGORY_TREE.toString()});
+		
+		return ret;
+	} 
 	
 }

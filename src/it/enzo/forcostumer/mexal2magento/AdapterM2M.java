@@ -18,6 +18,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
 
 import redstone.xmlrpc.XmlRpcStruct;
+import it.enzo.forcostumer.mexal2magento.adapter.GestioneCategorie;
 import it.enzo.forcostumer.mexal2magento.magento.MagentoXMLRPCOperation;
 import it.enzo.forcostumer.mexal2magento.magento.entita.CatalogInventoryStockItemUpdateEntity;
 import it.enzo.forcostumer.mexal2magento.magento.entita.CatalogProductCreateEntity;
@@ -33,6 +34,8 @@ public class AdapterM2M {
 	private DatabaseOperation dbop;
 	private MagentoXMLRPCOperation mxrop;
 	private UpdateArticoli upateArticoli;
+	
+	private GestioneCategorie gestioneCategorie;
 	
 	public void startProcessi(){
 		if(this.upateArticoli.isInterrupted()){
@@ -102,6 +105,8 @@ public class AdapterM2M {
 		this.mxrop.connect();
 		
 		upateArticoli = new UpdateArticoli(this);
+		
+		gestioneCategorie = new GestioneCategorie(this);
 		
 	}
 	

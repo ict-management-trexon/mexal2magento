@@ -916,5 +916,38 @@ public class DatabaseOperation {
 		}
 	}
 
+	public ArrayList<String> getListaMacrocategorie() {
+		
+		ArrayList<String> ret = new ArrayList<String>();
+		
+		Statement stm;
+		ResultSet rs;
+		
+		String query = "select NKY_CAT_STAT_ART, CDS_CAT_STAT_ART from trn_rp.dbo.TRN_TBSA where not CDS_CAT_STAT_ART = ''";
+		
+		try{
+			
+			stm = conn.createStatement();
+			
+			rs = stm.executeQuery(query);
+			
+			while(rs.next()){
+				String id = rs.getString("NKY_CAT_STAT_ART").replaceAll("\\s+$", "");
+				String nome = rs.getString("CDS_CAT_STAT_ART").replaceAll("\\s+$", "");
+				nome = nome.substring(0,1)+(nome.substring(1)).toLowerCase();
+				
+				ret.add(rs.getString("CKY_ART").replaceAll("\\s+$", ""));
+			}
+			
+			rs.close();
+			
+			stm.close();
+			
+			
+		}catch(Exception e){e.printStackTrace();}
+		
+		return null;
+	}
+
 	
 }

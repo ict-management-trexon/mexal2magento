@@ -5,7 +5,8 @@ CATALOG_PRODUCT_CREATE("catalog_product.create"),
 CATALOG_PRODUCT_UPDATE("catalog_product.update"),
 CATALOG_PRODUCT_DELETE("catalog_product.delete"),
 CATALOG_PRODUCT_LIST("catalog_product.list"),
-CATALOG_PRODUCT_ATTRIBUTE_MEDIA_CREATE("catalog_product_attribute_media.create");
+CATALOG_PRODUCT_ATTRIBUTE_MEDIA_CREATE("catalog_product_attribute_media.create"),
+CATALOG_CATEGORY_TREE("catalog_category.tree");
 
 private String method;
 

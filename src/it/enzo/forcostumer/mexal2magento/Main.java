@@ -72,7 +72,7 @@ public class Main {
 		break;
 		
 		case "x":
-			console("OPERAZZZ");
+			console(adapter.getMagentoXMLRPCOperation().getCategoryTree());
 		break;
 		
 		default:
