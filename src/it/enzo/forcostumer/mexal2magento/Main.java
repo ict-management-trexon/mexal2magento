@@ -72,7 +72,8 @@ public class Main {
 		break;
 		
 		case "x":
-			console(adapter.getMagentoXMLRPCOperation().getCategoryTree());
+			adapter.getGestioneCategorie().generaCategorieDaMexal();
+			//console(adapter.getMagentoXMLRPCOperation().getCategoryInfo("12"));
 		break;
 		
 		default:

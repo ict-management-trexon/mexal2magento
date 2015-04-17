@@ -1,6 +1,6 @@
 package it.enzo.forcostumer.mexal2magento.adapter.entity;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Categoria {
 
@@ -10,5 +10,5 @@ public class Categoria {
 	private String magentoName;
 	private String magentoId;
 	
-	private ArrayList<Categoria> sottocategorie;
+	private HashMap<String, Categoria> sottocategorie;
 }

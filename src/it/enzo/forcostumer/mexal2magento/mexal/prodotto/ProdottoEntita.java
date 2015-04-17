@@ -1,5 +1,7 @@
 package it.enzo.forcostumer.mexal2magento.mexal.prodotto;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
 
@@ -18,9 +20,9 @@ public class ProdottoEntita{
 	private Integer disponibilita_casoria = 0;
 	private Integer disponibilita_casalnuovo = 0;
 	private Integer disponibilita_fornitori_casoria = 0;
-	private Date data_prevista_casoria = Date.from(Instant.now());
+	private Date data_prevista_casoria;
 	private Integer disponibilita_fornitori_casalnuovo = 0;
-	private Date data_prevista_casalnuovo = Date.from(Instant.now());
+	private Date data_prevista_casalnuovo;
 	private String stato = "";
 	
 	
@@ -35,6 +37,15 @@ public class ProdottoEntita{
 	public ProdottoEntita(String cky_art, String nome){
 		this.mexal_cky_art = cky_art;
 		this.nome = nome;
+		String data = "00/00/0000";
+		SimpleDateFormat form = new SimpleDateFormat("dd/MM/yyyy");
+		try {
+			this.data_prevista_casalnuovo = form.parse(data);
+			this.data_prevista_casoria = form.parse(data);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public String getMexal_cky_art() {

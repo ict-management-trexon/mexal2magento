@@ -77,72 +77,29 @@ public class MagentoXMLRPCOperation {
 	}
 	
 	public Object getFromMagento(String command, Object[] params){
+		Object ret = new Object();
 		try {
-			return this.client.invoke(command, params);
+			ret = this.client.invoke(command, params);
 		} catch (XmlRpcException | XmlRpcFault e) {
-			//console("Riaggiornamento connessione con magento");
-			if(e.getMessage().equals("Session expired. Try to relogin.")){
+			
+				switch(e.getMessage()){
+			
+				case "Session expired. Try to relogin.":
+					console("Fault Message: "+e.getMessage());
+					break;
+			
+				case "Category not exists.":
 				
-				console("Timeout sessione...");
-				/*
+					break;
+			
+				default:
 				
-				try {
-					this.client = new XmlRpcClient("http://127.0.0.1/se", false);
-				} catch (MalformedURLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					console("Fault Message: "+e.getMessage());
+			
 				}
-				try {
-					this.client = new XmlRpcClient(urlString, false);
-				} catch (MalformedURLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				
-				Object[] login = new Object[]{new String("Enzo"), new String("password")};
-				try {
-					this.sessionId = (String) this.client.invoke("login", login);
-				} catch (XmlRpcException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (XmlRpcFault e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				try {
-					return this.client.invoke(command, params);
-				} catch (XmlRpcException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (XmlRpcFault e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				
-				/*
-				try {
-					Runtime.getRuntime().exec("cmd").waitFor();
-				} catch (IOException | InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				//System.exit(0);
-				 */
-			}else{console(e.getMessage());}
 		}
-		return new Object[]{};
+		return ret;
 	}
-	
-	/*
-	 * e.printStackTrace();
-	console("codice: "+e.errorCode);
-	console("codice get: "+e.getErrorCode());
-	console("messaggio: "+e.getMessage());
-	console(command);
-	for(int i = 0;i<params.length;i++){
-			console(params[i].toString());
-	}
-	 */
 	
 	public Object getFromMagentoAsync(Object[] params){
 		try {
@@ -449,6 +406,86 @@ public class MagentoXMLRPCOperation {
 		ret = (XmlRpcStruct) this.executeCall(new Object[]{this.sessionId, Methods.CATALOG_CATEGORY_TREE.toString()});
 		
 		return ret;
+	}
+	
+	public ArrayList<String> getCategoryTreeLinear(){
+		
+		ArrayList<String>  ret = new ArrayList<String>();
+		
+		XmlRpcStruct cat = getCategoryTree();
+		
+		XmlRpcArray rootTree = (XmlRpcArray) cat.get("children");
+		
+		chargeLinearCategory(ret, rootTree);
+		
+		return ret;
+	}
+	
+	private void chargeLinearCategory(ArrayList<String> ret, XmlRpcArray cat){
+		for(Object key : cat){
+			XmlRpcStruct key1 = (XmlRpcStruct) key;
+			ret.add((String)key1.get("category_id"));
+			XmlRpcArray cat1 = (XmlRpcArray) key1.get("children");
+			if(!cat1.isEmpty()){chargeLinearCategory(ret, cat1);}
+		}
+	}
+	
+	public ArrayList<String> getCategoryTreeLinearIdInterno(){
+		
+		ArrayList<String>  ret = new ArrayList<String>();
+		
+		ArrayList<String> arr = getCategoryTreeLinear();
+		
+		for(String key : arr){
+			ret.add(getIdCatInternById(key));
+		}
+		
+		return ret;
+	}
+	
+	/**
+	 * Da ricordare che deve essere presente all'interno dell'eav di magento, l'attributo "catIdInt"
+	 * aggiunto come attributo personalizzato delle categorie
+	 * @param id
+	 * @return
+	 */
+	
+	public String getIdCatInternById(String id){
+		String ret = "";
+		
+		XmlRpcStruct cat = getCategoryInfo(id);
+		
+		if(!cat.isEmpty()){
+			ret = cat.getString("catIdInt");
+		}
+		
+		return ret;
+	}
+	
+	public XmlRpcStruct getCategoryInfo(String id){
+		
+		XmlRpcStruct   ret = new XmlRpcStruct();
+		
+		//per richiamare solo alcuni parametri
+		//Object call = this.executeCall(new Object[]{this.sessionId, "catalog_category.info", new Object[]{id, "" , new Object[]{""}}});
+		
+		Object call = this.executeCall(new Object[]{this.sessionId, "catalog_category.info", new Object[]{id}});
+		
+		if((call.getClass()).equals(XmlRpcStruct.class)){
+		
+			ret = (XmlRpcStruct) call;
+		}
+		return ret;
 	} 
+	
+	//public boolean isCategoryIdPresent(String id){
+		
+	//}
+	
+	public void createCategory(String parentCat, XmlRpcStruct cat){
+		Object[] var = new Object[]{parentCat, cat};
+		Object[] par = new Object[]{this.sessionId, Methods.CATALOG_CATEGORY_CREATE.toString(), var};
+		this.executeCall(par);
+	}
 	
 }

@@ -916,9 +916,9 @@ public class DatabaseOperation {
 		}
 	}
 
-	public ArrayList<String> getListaMacrocategorie() {
+	public HashMap<String, String> getListaMacrocategorie() {
 		
-		ArrayList<String> ret = new ArrayList<String>();
+		HashMap<String, String> ret = new HashMap<String, String>();
 		
 		Statement stm;
 		ResultSet rs;
@@ -932,11 +932,13 @@ public class DatabaseOperation {
 			rs = stm.executeQuery(query);
 			
 			while(rs.next()){
-				String id = rs.getString("NKY_CAT_STAT_ART").replaceAll("\\s+$", "");
+				String id = "A" + rs.getString("NKY_CAT_STAT_ART").replaceAll("\\s+$", "");
 				String nome = rs.getString("CDS_CAT_STAT_ART").replaceAll("\\s+$", "");
+				
+				//Lettera maiuscola Iniziale
 				nome = nome.substring(0,1)+(nome.substring(1)).toLowerCase();
 				
-				ret.add(rs.getString("CKY_ART").replaceAll("\\s+$", ""));
+				ret.put(id, nome);
 			}
 			
 			rs.close();
@@ -946,7 +948,7 @@ public class DatabaseOperation {
 			
 		}catch(Exception e){e.printStackTrace();}
 		
-		return null;
+		return ret;
 	}
 
 	

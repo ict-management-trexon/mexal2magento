@@ -118,6 +118,10 @@ public class AdapterM2M {
 		return this.mxrop;
 	}
 	
+	public GestioneCategorie getGestioneCategorie() {
+		return gestioneCategorie;
+	}
+
 	public UpdateArticoli getUpateArticoli() {
 		return upateArticoli;
 	}
