@@ -186,7 +186,7 @@ public class MagentoXMLRPCOperation {
 		
 		String ret = "";
 		
-		Object[] par = new Object[]{this.sessionId, "catalog_product.list", new Object[]{attr}};
+		Object[] par = new Object[]{this.sessionId, Methods.CATALOG_PRODUCT_LIST.toString(), new Object[]{attr}};
 		XmlRpcArray arr = (XmlRpcArray) this.executeCall(par);
 		if(!arr.isEmpty()){
 		
@@ -408,6 +408,15 @@ public class MagentoXMLRPCOperation {
 		return ret;
 	}
 	
+	public XmlRpcStruct getCategoryTree(String parentId){
+		
+		XmlRpcStruct   ret = new XmlRpcStruct();
+		
+		ret = (XmlRpcStruct) this.executeCall(new Object[]{this.sessionId, Methods.CATALOG_CATEGORY_TREE.toString(), new Object[]{parentId}});
+		
+		return ret;
+	}
+	
 	public ArrayList<String> getCategoryTreeLinear(){
 		
 		ArrayList<String>  ret = new ArrayList<String>();
@@ -486,6 +495,13 @@ public class MagentoXMLRPCOperation {
 		Object[] var = new Object[]{parentCat, cat};
 		Object[] par = new Object[]{this.sessionId, Methods.CATALOG_CATEGORY_CREATE.toString(), var};
 		this.executeCall(par);
+	}
+
+	public boolean assegnaProdottoAllaCategoria(String product_id, String id_category) {
+		Object[] var = new Object[]{id_category, product_id};
+		Object[] call = new Object[]{this.sessionId, Methods.CATALOG_CATEGORY_ASSIGNPRODUCT.toString(), var};
+		
+		return (boolean) this.executeCall(call);
 	}
 	
 }

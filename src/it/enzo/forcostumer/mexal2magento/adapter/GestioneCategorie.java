@@ -2,12 +2,15 @@ package it.enzo.forcostumer.mexal2magento.adapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 import redstone.xmlrpc.XmlRpcArray;
 import redstone.xmlrpc.XmlRpcStruct;
 import it.enzo.forcostumer.mexal2magento.AdapterM2M;
 import it.enzo.forcostumer.mexal2magento.adapter.entity.Categoria;
+import it.enzo.forcostumer.mexal2magento.magento.entita.CatalogProductEntity;
+import it.enzo.forcostumer.mexal2magento.mexal.prodotto.ProdottoEntita;
 
 
 public class GestioneCategorie {
@@ -38,15 +41,61 @@ public class GestioneCategorie {
 		for(String key : listaMacroCategorie.keySet()){
 			if(!listaCategorieMagento.contains(key)){
 				//crea la categoria
+				console("Inserimento categoria "+listaMacroCategorie.get(key)+", con id interno "+key);
 				XmlRpcStruct cat = new XmlRpcStruct();
 				cat.put("name", listaMacroCategorie.get(key));
 				cat.put("is_active","1");
 				cat.put("catIdInt",key);
-				cat.put("available_sort_by",key);
-				adapter.getMagentoXMLRPCOperation().createCategory("1", cat);
+				cat.put("default_sort_by","position");
+				cat.put("position", "1");
+				cat.put("available_sort_by", "position");
+				cat.put("include_in_menu", "1");
+				adapter.getMagentoXMLRPCOperation().createCategory("2", cat);
+			}else{
+				console("Categoria "+listaMacroCategorie.get(key)+" con id interno "+key+" esistente");
 			}
 		}
 		
 	}
 	
+	public void assegnaTuttiIProdottiAlleCategorie(){
+		console("Ricezione della lista di tutti i prodotti presenti in magento...");
+		List<CatalogProductEntity> listaProdottiMexal = this.adapter.getMagentoXMLRPCOperation().getProductList();
+		console("Lista ricevuta, prenti "+listaProdottiMexal.size()+" prodotti");
+		
+		console("Generazione dell'albero delle gategorie...");
+		HashMap<String, String> albero = new HashMap<String, String>();
+		XmlRpcStruct defaultCatStruct = adapter.getMagentoXMLRPCOperation().getCategoryTree("2");
+		XmlRpcArray defalutCatChildren = defaultCatStruct.getArray("children");
+		
+		for(int i = 0;i<defalutCatChildren.size();i++){
+			XmlRpcStruct cat = defalutCatChildren.getStruct(i);
+			albero.put(cat.getString("category_id"), adapter.getMagentoXMLRPCOperation().getIdCatInternById(cat.getString("category_id")));
+			console("Alla gategoria id-magento "+cat.getString("category_id")+" e associato l'id di magento "+albero.get(cat.getString("category_id")));
+		}
+		
+		console("Sono presenti "+defalutCatChildren.size()+" categorie");
+		
+		int i = 0;
+		for(CatalogProductEntity key : listaProdottiMexal){
+			i++;
+			//richiesta prodotto da mexal
+			ProdottoEntita prod = adapter.getDatabaseOperation().getProdottoById(
+								   adapter.getMagentoXMLRPCOperation().getMagentoIdbyCodeiceArticolo(
+									key.getProduct_id()
+								   )
+								  );
+			
+			adapter.getMagentoXMLRPCOperation().assegnaProdottoAllaCategoria(key.getProduct_id(),albero.get(prod.getCategoria()));
+			
+			console("("+i+" di "+listaProdottiMexal.size()+") Inserito prodotto "+key.getName()+" nella categoria con id "+prod.getCategoria());
+		}
+		console("Terminato!");
+		
+	}
+	
+	
+	public static void console(Object out){
+		System.out.println(out);
+	}
 }

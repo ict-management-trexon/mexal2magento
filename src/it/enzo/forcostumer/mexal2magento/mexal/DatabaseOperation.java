@@ -135,7 +135,7 @@ public class DatabaseOperation {
 		Statement stm;
 		ResultSet rs;
 		ProdottoEntita artOb = new ProdottoEntita("","");
-		String sql = "select CKY_ART, IST_ART, CDS_ART, CDS_AGGIUN_ART, NCF_CONV, NGB_CAT_STAT_ART, CSG_UNIMIS_PRI from trn_rp.dbo.TRN_ARTI where CKY_ART = '"+CKY_ART+"' and IST_ART = 'A'";
+		String sql = "select CKY_ART, IST_ART, CDS_ART, CDS_AGGIUN_ART, NCF_CONV, CSG_CAT_STAT_ART, NGB_CAT_STAT_ART, CSG_UNIMIS_PRI from trn_rp.dbo.TRN_ARTI where CKY_ART = '"+CKY_ART+"' and IST_ART = 'A'";
 		try{
 			stm = conn.createStatement();
 			rs = stm.executeQuery(sql);
@@ -159,7 +159,7 @@ public class DatabaseOperation {
 				artOb.setStato(stato);
 				artOb.setUnita_misura(rs.getString("CSG_UNIMIS_PRI").replaceAll("\\s+$", ""));
 				artOb.setPeso(rs.getString("NCF_CONV").replaceAll("\\s+$", ""));
-				artOb.setCategoria(rs.getString("NGB_CAT_STAT_ART").replaceAll("\\s+$", ""));
+				artOb.setCategoria(rs.getString("CSG_CAT_STAT_ART").replaceAll("\\s+$", "")+rs.getString("NGB_CAT_STAT_ART").replaceAll("\\s+$", ""));
 				artOb.setManufacturer(getManufacturerById(CKY_ART));
 				artOb.setDescrizione(getDescriptionById(artOb.getMexal_cky_art()));
 				artOb.setPrezzo(getPriceById(artOb.getMexal_cky_art()));

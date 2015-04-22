@@ -32,6 +32,7 @@ public class Main {
 		console("3.Inserisci tutte le immagini");
 		console("4.Verifica esistenza triggers");
 		console("5.Cancella triggers");
+		console("6.Assegna tutti i prodotti alle categorie");
 		console("e.EXIT");
 		console("x.Prove");
 	}
@@ -67,13 +68,18 @@ public class Main {
 			adapter.getDatabaseOperation().deleteTriggers();
 		break;
 		
+		case "6":
+			adapter.getGestioneCategorie().assegnaTuttiIProdottiAlleCategorie();
+		break;
+		
 		case "e":
 			adapter.destroy();
 		break;
 		
 		case "x":
-			adapter.getGestioneCategorie().generaCategorieDaMexal();
-			//console(adapter.getMagentoXMLRPCOperation().getCategoryInfo("12"));
+			//adapter.getGestioneCategorie().generaCategorieDaMexal();
+			//console(adapter.getMagentoXMLRPCOperation().getCategoryTree("2"));
+			
 		break;
 		
 		default:
