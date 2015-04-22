@@ -497,11 +497,11 @@ public class MagentoXMLRPCOperation {
 		this.executeCall(par);
 	}
 
-	public boolean assegnaProdottoAllaCategoria(String product_id, String id_category) {
+	public void assegnaProdottoAllaCategoria(String product_id, String id_category) {
 		Object[] var = new Object[]{id_category, product_id};
 		Object[] call = new Object[]{this.sessionId, Methods.CATALOG_CATEGORY_ASSIGNPRODUCT.toString(), var};
 		
-		return (boolean) this.executeCall(call);
+		this.executeCall(call);
 	}
 	
 }

@@ -70,8 +70,9 @@ public class GestioneCategorie {
 		
 		for(int i = 0;i<defalutCatChildren.size();i++){
 			XmlRpcStruct cat = defalutCatChildren.getStruct(i);
-			albero.put(adapter.getMagentoXMLRPCOperation().getIdCatInternById(cat.getString("category_id")), cat.getString("category_id"));
-			console("Alla categoria id-magento "+cat.getString("category_id")+" e associato l'id di magento "+albero.get(cat.getString("category_id")));
+			String idCatMex = adapter.getMagentoXMLRPCOperation().getIdCatInternById(cat.getString("category_id"));
+			albero.put(idCatMex, cat.getString("category_id"));
+			console("Alla categoria id-magento "+cat.getString("category_id")+" e associato l'id di mexal "+idCatMex);
 		}
 		
 		console("Sono presenti "+defalutCatChildren.size()+" categorie");
