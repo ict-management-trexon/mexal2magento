@@ -63,15 +63,15 @@ public class GestioneCategorie {
 		List<CatalogProductEntity> listaProdottiMexal = this.adapter.getMagentoXMLRPCOperation().getProductList();
 		console("Lista ricevuta, prenti "+listaProdottiMexal.size()+" prodotti");
 		
-		console("Generazione dell'albero delle gategorie...");
+		console("Generazione dell'albero delle categorie...");
 		HashMap<String, String> albero = new HashMap<String, String>();
 		XmlRpcStruct defaultCatStruct = adapter.getMagentoXMLRPCOperation().getCategoryTree("2");
 		XmlRpcArray defalutCatChildren = defaultCatStruct.getArray("children");
 		
 		for(int i = 0;i<defalutCatChildren.size();i++){
 			XmlRpcStruct cat = defalutCatChildren.getStruct(i);
-			albero.put(cat.getString("category_id"), adapter.getMagentoXMLRPCOperation().getIdCatInternById(cat.getString("category_id")));
-			console("Alla gategoria id-magento "+cat.getString("category_id")+" e associato l'id di magento "+albero.get(cat.getString("category_id")));
+			albero.put(adapter.getMagentoXMLRPCOperation().getIdCatInternById(cat.getString("category_id")), cat.getString("category_id"));
+			console("Alla categoria id-magento "+cat.getString("category_id")+" e associato l'id di magento "+albero.get(cat.getString("category_id")));
 		}
 		
 		console("Sono presenti "+defalutCatChildren.size()+" categorie");
@@ -80,15 +80,17 @@ public class GestioneCategorie {
 		for(CatalogProductEntity key : listaProdottiMexal){
 			i++;
 			//richiesta prodotto da mexal
-			ProdottoEntita prod = adapter.getDatabaseOperation().getProdottoById(
-								   adapter.getMagentoXMLRPCOperation().getMagentoIdbyCodeiceArticolo(
-									key.getProduct_id()
-								   )
-								  );
 			
-			adapter.getMagentoXMLRPCOperation().assegnaProdottoAllaCategoria(key.getProduct_id(),albero.get(prod.getCategoria()));
+			XmlRpcStruct idMexal = adapter.getMagentoXMLRPCOperation().getProdInfo(key.getProduct_id());
+			ProdottoEntita prod = adapter.getDatabaseOperation().getProdottoById(idMexal.getString("cky_art"));
 			
-			console("("+i+" di "+listaProdottiMexal.size()+") Inserito prodotto "+key.getName()+" nella categoria con id "+prod.getCategoria());
+			if(!prod.getCategoria().equals("")){
+				String categoriaMagento = albero.get(prod.getCategoria());
+				adapter.getMagentoXMLRPCOperation().assegnaProdottoAllaCategoria(categoriaMagento, key.getProduct_id());
+				console("("+i+" di "+listaProdottiMexal.size()+") Inserito prodotto "+key.getName()+" nella categoria con id "+prod.getCategoria());
+			}else{
+				console("("+i+" di "+listaProdottiMexal.size()+") Prodotto "+key.getName()+" ha categoria non assegnata");
+			}
 		}
 		console("Terminato!");
 		
