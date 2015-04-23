@@ -81,16 +81,17 @@ public class GestioneCategorie {
 		for(CatalogProductEntity key : listaProdottiMexal){
 			i++;
 			//richiesta prodotto da mexal
-			
+			//if(i>=2943){
 			XmlRpcStruct idMexal = adapter.getMagentoXMLRPCOperation().getProdInfo(key.getProduct_id());
 			ProdottoEntita prod = adapter.getDatabaseOperation().getProdottoById(idMexal.getString("cky_art"));
 			
 			if(!prod.getCategoria().equals("")){
 				String categoriaMagento = albero.get(prod.getCategoria());
-				adapter.getMagentoXMLRPCOperation().assegnaProdottoAllaCategoria(categoriaMagento, key.getProduct_id());
+				adapter.getMagentoXMLRPCOperation().assegnaProdottoAllaCategoria(key.getProduct_id(), categoriaMagento);
 				console("("+i+" di "+listaProdottiMexal.size()+") Inserito prodotto "+key.getName()+" nella categoria con id "+prod.getCategoria());
 			}else{
 				console("("+i+" di "+listaProdottiMexal.size()+") Prodotto "+key.getName()+" ha categoria non assegnata");
+			//}
 			}
 		}
 		console("Terminato!");

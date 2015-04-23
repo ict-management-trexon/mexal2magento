@@ -97,6 +97,8 @@ public class MagentoXMLRPCOperation {
 					console("Fault Message: "+e.getMessage());
 			
 				}
+		} catch(Exception e1){
+			console("Errore..."+e1.getMessage());
 		}
 		return ret;
 	}
@@ -498,10 +500,25 @@ public class MagentoXMLRPCOperation {
 	}
 
 	public void assegnaProdottoAllaCategoria(String product_id, String id_category) {
+		
+		//HashMap<Object, Object> catolprodcrE = new HashMap<Object, Object>();
+		//catolprodcrE.put("category_ids", new Object[]{"2", id_category});
+		
+		//Object[] var = new Object[]{product_id, catolprodcrE};
 		Object[] var = new Object[]{id_category, product_id};
 		Object[] call = new Object[]{this.sessionId, Methods.CATALOG_CATEGORY_ASSIGNPRODUCT.toString(), var};
 		
 		this.executeCall(call);
 	}
 	
+	public Object getOrder(){
+		Object ret = new Object();
+		
+		Object[] var = new Object[]{"", ""};
+		Object[] call = new Object[]{this.sessionId, "order.list"};
+		
+		ret = this.executeCall(call);
+		
+		return ret;
+	}
 }

@@ -77,8 +77,15 @@ public class Main {
 		break;
 		
 		case "x":
-			//adapter.getGestioneCategorie().generaCategorieDaMexal();
-			//console(adapter.getMagentoXMLRPCOperation().getCategoryTree("2"));
+			XmlRpcArray x = (XmlRpcArray) adapter.getMagentoXMLRPCOperation().getOrder();
+			
+			for(int i = 0;i<x.size();i++){
+				XmlRpcStruct s = x.getStruct(i);
+				
+				console(s.getString("increment_id"));
+				console(s.getString("status"));
+				console(s.getString("status"));
+			}
 			
 		break;
 		
